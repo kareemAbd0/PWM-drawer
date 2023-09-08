@@ -11,6 +11,9 @@
 #include "GLCD_priv.h"
 #include "GLCD_prog.h"
 
+
+
+
 ES_t GLCD_init(){
 
     ES_t Local_ErrorState = ES_OK;
@@ -75,23 +78,30 @@ ES_t GLCD_init(){
 
 ES_t GLCD_send_data(u8 u8_data){
 
+
     ES_t Local_ErrorState = ES_OK;
-    DIO_SetPinValue(D0_PORT,D0_PIN,(u8_data>>0)&1);
-    DIO_SetPinValue(D1_PORT,D1_PIN,(u8_data>>1)&1);
-    DIO_SetPinValue(D2_PORT,D2_PIN,(u8_data>>2)&1);
-    DIO_SetPinValue(D3_PORT,D3_PIN,(u8_data>>3)&1);
-    DIO_SetPinValue(D4_PORT,D4_PIN,(u8_data>>4)&1);
-    DIO_SetPinValue(D5_PORT,D5_PIN,(u8_data>>5)&1);
-    DIO_SetPinValue(D6_PORT,D6_PIN,(u8_data>>6)&1);
-    DIO_SetPinValue(D7_PORT,D7_PIN,(u8_data>>7)&1);
+    if(u8_data >= 255){
+        Local_ErrorState = ES_OUT_OF_RANGE;
+    }
+    else {
 
-    DIO_SetPinValue(RS_PORT,RS_PIN,HIGH);
-    DIO_SetPinValue(RW_PORT,RW_PIN,LOW);
-    DIO_SetPinValue(EN_PORT,EN_PIN,HIGH);
+        DIO_SetPinValue(D0_PORT, D0_PIN, (u8_data >> 0) & 1);
+        DIO_SetPinValue(D1_PORT, D1_PIN, (u8_data >> 1) & 1);
+        DIO_SetPinValue(D2_PORT, D2_PIN, (u8_data >> 2) & 1);
+        DIO_SetPinValue(D3_PORT, D3_PIN, (u8_data >> 3) & 1);
+        DIO_SetPinValue(D4_PORT, D4_PIN, (u8_data >> 4) & 1);
+        DIO_SetPinValue(D5_PORT, D5_PIN, (u8_data >> 5) & 1);
+        DIO_SetPinValue(D6_PORT, D6_PIN, (u8_data >> 6) & 1);
+        DIO_SetPinValue(D7_PORT, D7_PIN, (u8_data >> 7) & 1);
 
-    TIMER0_BusyWaitms(5);
-    DIO_SetPinValue(EN_PORT,EN_PIN,LOW);
-    TIMER0_BusyWaitms(5);
+        DIO_SetPinValue(RS_PORT, RS_PIN, HIGH);
+        DIO_SetPinValue(RW_PORT, RW_PIN, LOW);
+        DIO_SetPinValue(EN_PORT, EN_PIN, HIGH);
+
+        TIMER0_BusyWaitms(5);
+        DIO_SetPinValue(EN_PORT, EN_PIN, LOW);
+        TIMER0_BusyWaitms(5);
+    }
     return Local_ErrorState;
 
 }
@@ -135,6 +145,28 @@ ES_t go_to_page(u8 u8_page){
     }
     else{
         Local_ErrorState = ES_OUT_OF_RANGE;
+    }
+    return Local_ErrorState;
+}
+
+ES_t GLCD_print_char(u8 u8_char){
+   char *local_char = char_array[u8_char-32];
+
+    for (int i = 0; i < 6; i++) {
+        GLCD_send_data(*(local_char+i));
+    }
+
+}
+
+ES_t GLCD_print_string(u8 *u8_string){
+    ES_t Local_ErrorState = ES_OK;
+    if(u8_string == NULL){
+        Local_ErrorState = ES_NULL_POINTER;
+    }
+    u8 u8_index = 0;
+    while(*(u8_string+u8_index) != '\0'){
+        GLCD_print_char(*(u8_string+u8_index));
+        u8_index++;
     }
     return Local_ErrorState;
 }
