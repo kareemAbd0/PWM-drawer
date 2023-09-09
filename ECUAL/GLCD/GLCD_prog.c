@@ -80,7 +80,7 @@ ES_t GLCD_send_data(u8 u8_data){
 
 
     ES_t Local_ErrorState = ES_OK;
-    if(u8_data >= 255){
+    if(u8_data > 255){
         Local_ErrorState = ES_OUT_OF_RANGE;
     }
     else {
@@ -162,11 +162,14 @@ ES_t GLCD_print_string(u8 *u8_string){
     ES_t Local_ErrorState = ES_OK;
     if(u8_string == NULL){
         Local_ErrorState = ES_NULL_POINTER;
-    }
-    u8 u8_index = 0;
-    while(*(u8_string+u8_index) != '\0'){
-        GLCD_print_char(*(u8_string+u8_index));
-        u8_index++;
+    }else {
+
+
+        u8 u8_index = 0;
+        while (*(u8_string + u8_index) != '\0') {
+            GLCD_print_char(*(u8_string + u8_index));
+            u8_index++;
+        }
     }
     return Local_ErrorState;
 }
