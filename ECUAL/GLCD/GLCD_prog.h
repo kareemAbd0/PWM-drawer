@@ -20,6 +20,9 @@ ES_t go_to_column(u8 u8_column);
 ES_t go_to_page(u8 u8_page);
 ES_t GLCD_print_char(u8 u8_char);
 ES_t GLCD_print_string(u8 *u8_string);
+ES_t GLCD_draw_horizontal_line(u8 u8_column,u8 u8_page,u8 u8_length);//length in pixel
+ES_t GLCD_draw_vertical_line(u8 u8_column,u8 u8_page,u8 u8_length); // length in pages
+
 ES_t GLCD_clear_all();
 
 

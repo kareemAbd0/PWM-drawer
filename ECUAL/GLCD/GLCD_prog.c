@@ -14,6 +14,7 @@
 
 
 
+
 ES_t GLCD_init(){
 
     ES_t Local_ErrorState = ES_OK;
@@ -174,6 +175,52 @@ ES_t GLCD_print_string(u8 *u8_string){
     return Local_ErrorState;
 }
 
+ES_t GLCD_draw_horizontal_line(u8 u8_column,u8 u8_page,u8 u8_length){
+    ES_t Local_ErrorState = ES_OK;
+    u8 u8_index;
+    if(u8_column < 64 && u8_page < 8  && u8_length <= 64){
+        go_to_column(u8_column);
+        go_to_page(u8_page);
+        for(u8_index = 0; u8_index < u8_length; u8_index++){
+            GLCD_send_data(0x80);
+        }
+    } else if(u8_column < 128 && u8_page < 8 && u8_length <= 64){
+        go_to_column(u8_column);
+        go_to_page(u8_page);
+        for(u8_index = 0; u8_index < u8_length; u8_index++){
+            GLCD_send_data(0x80);
+        }
+    } else{
+        Local_ErrorState = ES_OUT_OF_RANGE;
+    }
+
+    return Local_ErrorState;
+}
+
+ES_t GLCD_draw_vertical_line(u8 u8_column,u8 u8_page,u8 u8_length){
+    ES_t Local_ErrorState = ES_OK;
+    u8 u8_index;
+    if(u8_column < 64 && u8_page < 8  && u8_length <= 8){
+        go_to_column(u8_column);
+        go_to_page(u8_page);
+        for(u8_index = 0; u8_index < u8_length; u8_index++){
+            go_to_column(u8_column);
+            go_to_page(u8_page + u8_index);
+            GLCD_send_data(0xff);
+        }
+    } else if(u8_column < 128 && u8_page < 8 && u8_length <= 8){
+        go_to_column(u8_column);
+        go_to_page(u8_page);
+        for(u8_index = 0; u8_index < u8_length; u8_index++){
+            go_to_column(u8_column);
+            go_to_page(u8_page + u8_index);
+            GLCD_send_data(0xff);
+        }
+    } else{
+        Local_ErrorState = ES_OUT_OF_RANGE;
+    }
+    return Local_ErrorState;
+}
 ES_t GLCD_clear_all(){
     ES_t Local_ErrorState = ES_OK;
     u8 u8_page;
